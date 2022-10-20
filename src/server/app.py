@@ -1,14 +1,9 @@
+import logging
 import os
 import pathlib
 import random
-import logging
 
-from flask import (
-    Flask,
-    send_file,
-    send_from_directory,
-    jsonify,
-)
+from flask import Flask, jsonify, send_file, send_from_directory
 
 app = Flask(__name__)
 
@@ -22,6 +17,7 @@ def home():
 def send_static(path):
     return send_from_directory("static", path)
 
+
 @app.route("/text")
 def text():
     return jsonify(
@@ -30,6 +26,7 @@ def text():
             # "words": "zoop zoop".split(),
         }
     )
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001)
