@@ -1,9 +1,13 @@
+import itertools
 import logging
 import os
 import pathlib
+import pickle
 import random
 
 from flask import Flask, jsonify, send_file, send_from_directory
+
+from markov_typing_test.markov import _gen_text
 
 app = Flask(__name__)
 
@@ -18,12 +22,21 @@ def send_static(path):
     return send_from_directory("static", path)
 
 
+_MODEL = None
+_FILE_DIR = pathlib.Path(__file__).parent.resolve()
+
+
 @app.route("/text")
 def text():
+    global _MODEL
+    if _MODEL is None:
+        with open(os.path.join(_FILE_DIR, "model.pkl"), "rb") as fo:
+            _MODEL = pickle.load(fo)
+    words = list(itertools.islice(_gen_text(_MODEL), 300))
+
     return jsonify(
         {
-            "words": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.".split(),
-            # "words": "zoop zoop".split(),
+            "words": words,
         }
     )
 
