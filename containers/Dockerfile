@@ -10,4 +10,4 @@ RUN pip install --no-cache-dir -e .
 
 ENV PYTHONUNBUFFERED=.
 
-ENTRYPOINT [ "gunicorn", "-b", "0.0.0.0:5656", "sdp.app:app"]
+ENTRYPOINT [ "gunicorn", "-b", "0.0.0.0:5656", "server.app:app"]
