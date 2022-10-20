@@ -1,0 +1,246 @@
+body {
+  margin: 0 auto;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 1em 2em;
+  color: #555;
+}
+
+.button-right {
+  float: right;
+}
+
+
+/* CSS */
+.button-2 {
+  background-color: rgb(194, 198, 204);
+  border-radius: 8px;
+  border-width: 0;
+  color: #333333;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 10px 12px;
+  text-align: center;
+  transition: all 200ms;
+  vertical-align: baseline;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-right {
+  text-align: right;
+}
+
+p {
+  font-size: 14px;
+}
+
+.small-p {
+  font-size: 10px;
+}
+
+.form-div {
+  width: 100%;
+  display: table;
+}
+.form-item-div {
+  display: table-cell
+}
+
+.login-div {
+  border-color: rgba(194, 198, 204, 1.0);
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 2px;
+  background-color: white;
+  display: none; 
+  position: absolute; 
+  top: 60px; 
+  right:-8%; 
+  width: 20%;
+  z-index: 9; 
+  margin-right: 10%;
+  box-shadow:0 0 3px 3px rgba(0,0,0,0.26);
+}
+
+h2 {
+  font-size: 14px;
+  text-align: left;
+}
+
+h1,
+h2,
+strong {
+  color: #333;
+}
+
+code,
+pre {
+  background: #eee;
+}
+
+code {
+  padding: 2px 4px;
+  vertical-align: text-bottom;
+}
+
+/* pre {
+  padding: 1em;
+} */
+
+a {
+  color: #e81c4f;
+}
+
+body {
+  color: #566b78;
+}
+
+code,
+pre {
+  background: #f5f7f9;
+  border-bottom: 1px solid #d8dee9;
+  color: #a7adba;
+}
+
+pre {
+  border-left: 2px solid #69c;
+}
+
+.container {
+  position: relative;
+  text-align: left;
+  /* background-color: rgb(67,79,85); */
+}
+
+/* Top left text */
+.top-left {
+  position: absolute;
+  top: 25%;
+  left: 16px;
+}
+
+
+header {
+  /* background-color: #263d36; */
+  /* background-image:  linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url("/static/stock-photo-young-smiling-cheerful-woman-holding-her-resume-250929607.jpeg");Photo by Samuel Ferrara on Unsplash */
+  /* background-position: center top; */
+  /* background-repeat: no-repeat; */
+  /* background-size: cover; */
+  /* line-height: 1.2; */
+  /* padding: 20vw 2em; */
+  text-align: left;
+} 
+/* header img {
+  display: inline-block;
+  height: 40px;
+  vertical-align: top;
+  width: 120px;
+} */
+header h1 {
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  color: white;
+  font-size: 36px;
+  /* text-align: center; */
+  font-weight: 600;
+  display: inline;
+}
+
+/* header a {
+  border: 1px solid #e81c4f;
+  border-radius: 290486px;
+  color: white;
+  font-size: 0.6em;
+  letter-spacing: 0.2em;
+  padding: 1em 2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: none 200ms ease-out;
+  transition-property: color, background;
+} */
+
+/* header a:hover {
+  background:  #e81c4f;
+  color: white;
+} */
+
+.login-label {
+  margin-top: 10px;
+}
+input[type=email] {
+  padding:10px;
+  border:0;
+  box-shadow:0 0 3px 4px rgba(0,0,0,0.1);
+  margin: 10 10;
+  width: 90%;
+  padding:10px;
+  margin-top: 10px;
+  border-radius:10px;
+  font-size: 14px;
+}
+input[type=password] {
+  padding:10px;
+  border:0;
+  box-shadow:0 0 3px 4px rgba(0,0,0,0.1);
+  margin: 10 10;
+  margin-top: 10px;
+  width: 90%;
+  padding:10px;
+  border-radius:10px;
+  font-size: 14px;
+}
+
+.rounded-input {
+  padding:10px;
+  border-radius:10px;
+}
+input[type=submit]
+{
+  background-color: rgb(194, 198, 204);
+  border-radius: 8px;
+  border-width: 0;
+  color: #333333;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 10px 12px;
+  text-align: center;
+  transition: all 200ms;
+  vertical-align: baseline;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.flex-container {
+  display: flex;
+}
+
+.flex-child {
+  flex: 1;
+}  
+
+.flex-child:first-child {
+  margin-right: 20px;
+} 
+
+.highlight {
+  background-color: #fa9898;
+  font-weight: bold;
+
+}

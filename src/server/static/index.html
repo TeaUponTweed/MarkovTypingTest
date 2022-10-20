@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+    <head> 
+        <meta charset="UTF-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <link rel="stylesheet" href="/static/styles.css">
+    </head>
+
+    <div>
+        <center>
+        <p id="text_to_type">
+
+        </p>
+        <p id="word_count">
+            Word count: 0
+        </p>
+        <p id="time_remaining">
+            Time remaining: 60s
+        </p>
+        <p id="current_word">
+            Start typing...
+        </p>
+        </center>
+    </div>
+<script type="text/javascript">
+    var text_to_type = document.getElementById("text_to_type");
+    var current_word = document.getElementById("current_word");
+    var word_count = document.getElementById("word_count");
+    var time_remaining = document.getElementById("time_remaining");
+    var current_typed_word = "";
+    var wpm = 0
+    var paragraph;
+    var paragraph_ix = 0;
+    const dt = 100;
+    const type_time = 60000;
+    var start_time;
+    document.addEventListener('keydown', function(event) {
+        const key = event.key;
+        if (start_time && Date.now() - start_time > type_time) {
+            return;
+        }
+        if (key == " ") {
+            if (current_typed_word == paragraph[paragraph_ix].replace(",", "").replace(".","")) {
+                wpm = wpm + 1;
+                word_count.innerHTML = `Word count: ${wpm}`
+            }
+            current_typed_word = "";
+            current_word.innerHTML = current_typed_word;
+            paragraph_ix = paragraph_ix + 1;
+            update_text_to_type();
+
+        } else if ("abcdefghijklmnopqrstuvwxyz-'".includes(key.toLowerCase())) {
+            current_typed_word = current_typed_word + key;
+            current_word.innerHTML = current_typed_word;
+            if (!start_time) {
+                start_time = Date.now();
+                setInterval(function() {
+                    if (Date.now() - start_time > type_time) {
+                        time_remaining.innerHTML = `Time is up. WPM: ${wpm}. Refresh page to try again.`;
+                        current_word.innerHTML.innerHTML = "";
+                    } else {
+                        time_remaining.innerHTML = `Time remaining: ${(type_time - (Date.now() - start_time))/1000}s`;
+                    }
+                }, dt);
+            }
+        } else if (key == "Backspace") {
+            if (current_typed_word.length > 0) {
+                current_typed_word = current_typed_word.substring(0, current_typed_word.length - 1);
+                current_word.innerHTML = current_typed_word;
+            }
+        }
+    });
+    function update_text_to_type() {
+        paragraphCopy = [...paragraph];
+        paragraphCopy[paragraph_ix] = "<span class='highlight'>" + paragraphCopy[paragraph_ix] + "</span>";
+        text_to_type.innerHTML = paragraphCopy.join(" ");
+    }
+
+    function get_paragraph() {
+        fetch("/text")
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            }
+        })
+        .then((data) => {
+            paragraph = data.words;
+            update_text_to_type();
+        });
+    }
+    get_paragraph();
+</script>
+</html>
