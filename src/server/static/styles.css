@@ -241,6 +241,5 @@ input[type=submit]
 
 .highlight {
   background-color: #fa9898;
-  font-weight: bold;
-
+  /*font-weight: bold;*/
 }
