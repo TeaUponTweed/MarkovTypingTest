@@ -3,41 +3,30 @@ import os
 import pickle
 import random
 import sys
-from collections import deque
+from collections import Counter
 
 import fire
-import numpy as np
-
 from markov_typing_test.common_words import COMMON_WORDS
 
-
-def _load_lines(f):
-    txt = " ".join(l.strip() for l in f)
-    return (
-        txt.replace(",", "")
-        .replace(";", ".")
-        .replace("!", ".")
-        .replace("?", ".")
-        .replace("--", " ")
-        .replace("_", "")
-        .split(".")
-    )
+N_GRAM_MAX = 3
 
 
-# common_words = open('')
+def _process_word(word: str) -> str:
+    w = "".join(
+        ch for ch in word if ord("A") <= ord(ch) <= ord("z") or ch == "-" or ch == "'"
+    ).lower()
+    return w
+
+
 def _make_markov_model(lines, ngram, model=None):
     if model is None:
         model = {}
     for line in lines:
-        line = line.split()
+        line = list(map(_process_word, line.strip().split()))
         for i in range(len(line) - ngram):
             for j in range(1, ngram + 1):
                 key = tuple(line[i : i + j])
-                # if not (set(key) & COMMON_WORDS):
-                #   continue
                 next_word = line[i + j]
-                if next_word not in COMMON_WORDS:
-                    continue
                 if key not in model:
                     model[key] = {}
                 if next_word not in model[key]:
@@ -47,9 +36,7 @@ def _make_markov_model(lines, ngram, model=None):
     return model
 
 
-def make_model(article_dir: str, outfile: str):
-    # = sys.argv[1]
-    # outfile = sys.argv[2]
+def make_model(article_dir: str, outfile: str, max_files: int = 2000):
     articles = os.listdir(article_dir)
     random.shuffle(articles)
     model = {}
@@ -58,71 +45,78 @@ def make_model(article_dir: str, outfile: str):
         with open(os.path.join(article_dir, article)) as fo:
             lines = [l.rstrip() for l in fo.readlines()]
             lines = [l for l in lines if len(l) > 1]
-            model = _make_markov_model(lines, 3, model)
+            model = _make_markov_model(lines, N_GRAM_MAX, model)
             if i % 100 == 0:
                 with open(outfile, "wb") as out:
                     print(f"Checkpointing model")
                     pickle.dump(model, out)
-            if i > 2000:
-                return
+            if i > max_files:
+                break
+
+    with open(outfile, "wb") as out:
+        pickle.dump(model, out)
 
 
 def _gen_text(model: dict) -> str:
     key = random.choice(list(model.keys()))
-    # for _ in range(nwords):
     done_words = set()
     while True:
         # TODO weight against choosing the same words again in a less all-or-nothing way
+        # TODO try other words at the full key size rather than shortening immediately
         word = _get_word(model, key)
         if word in done_words:
             done_words.pop(word)
         else:
             yield word
-            key = (*key[1:], word)
-            if key not in model:
-                print("Random")
-                # TODO store lesser ngrams so we can roll back
-                key = random.choice(list(model.keys()))
+            if len(key) == N_GRAM_MAX:
+                key = key[1:]
+            key = (*key, word)
+            if not _valid_key(key, model):
+                for i in range(1, N_GRAM_MAX):
+                    if _valid_key(tuple(key[i:]), model):
+                        key = key[i:]
+                        break
+                else:
+                    print("random")
+                    key = random.choice(list(model.keys()))
+            # print(key, model[key])
+
+
+def _valid_key(key: tuple[str], model: dict) -> bool:
+    if len(key) == 0:
+        return False
+    words = model.get(key, None)
+    if words is None:
+        return False
+    elif len(words) == 0:
+        return False
+    elif len(words) == 1:
+        return False
+    return True
 
 
 def _get_word(model, key):
-    words = list(model[key].keys())
-    weights = list(model[key].values())
-    # TODO need to use a better structure
-    # TODO can do normalization
-    weights = weights / np.sum(weights)
-    ixs = np.arange(weights.size, dtype=int)
-    ix = np.random.choice(ixs, p=weights)
-    return words[ix]
-    # model[start]
-    # ngram = len()[0])
+    words, weights = zip(
+        *[
+            (
+                word,
+                weight
+                * (4 if word in COMMON_WORDS else 1)
+                * (4 if len(word) > 3 else 1),
+            )
+            for word, weight in model[key].items()
+        ]
+    )
+    (word,) = random.choices(words, weights=weights)
+    return word
 
 
 def get_text(model: str, nwords: int = 1000):
     with open(model, "rb") as fo:
         model = pickle.load(fo)
-    print(" ".join(itertools.islice(_gen_text(model), nwords)))
-    # fname = sys.argv[1]
-    # length = int(sys.argv[2])
-    # ngram = int(sys.argv[3])
-    # with open(fname) as f:
-    #     model = make_markov_model(load_lines(f), ngram)
-    #     keys = list(model)
-    #     last_words = deque(random.choice(keys), ngram)
-    #     for _ in range(length):
-    #         key = tuple(last_words)
-    #         for i in range(ngram):
-    #             if key[i:] in model:
 
-    #                 word = random.choice(model[key[i:]])
-    #                 break
-    #         else:
-
-    #             word = random.choice(random.choice(keys))
-
-    #         last_words.append(word)
-    #         sys.stdout.write("{} ".format(word))
-    # print()
+    text = list(itertools.islice(_gen_text(model), nwords))
+    print(" ".join(text))
 
 
 if __name__ == "__main__":

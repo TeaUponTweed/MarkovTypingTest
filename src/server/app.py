@@ -6,7 +6,6 @@ import pickle
 import random
 
 from flask import Flask, jsonify, send_file, send_from_directory
-
 from markov_typing_test.markov import _gen_text
 
 app = Flask(__name__)
