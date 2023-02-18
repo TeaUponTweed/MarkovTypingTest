@@ -2,6 +2,8 @@
 
 This repository is used to serve https://typing.derivativeworks.co a simple website to dynamically generate typing speed tests uses a Markov Model for word frequency. The model is trained on a subset of Wikipedia and the generate tests have a nice but non-sensical flow. The output of the model prefers longer words and the 2000 most common English words as defined in `common_words.py`.
 
+![Example Typing Test](./example.gif)
+
 # Markov Model
 
 The code for training a new model given a corpus, along with using a model can be found in marcov.py
